@@ -16,16 +16,6 @@ const Messages = ({socket}) => {
             // console.log('socket on receive_message ');
             const {message, username, room, __createdtime__, type} = data;
             switch (type) {
-                case 'text':
-                    setMessagesReceived((state) => [
-                        ...state,
-                        {
-                            message: message,
-                            username: username,
-                            __createdtime__: data.__createdtime__,
-                        },
-                    ]);
-                    break;
                 case 'media':
                     setMessagesReceived((state) => [
                         ...state,
@@ -33,12 +23,23 @@ const Messages = ({socket}) => {
                             message: message,
                             username: username,
                             __createdtime__: data.__createdtime__,
+                            type: 'media'
                         },
                     ]);
                     axios.get("http://localhost:4000/file?filename=" + message).then((response) => {
                         console.log("http://localhost:4000/file?filename=" + message, response)
                     });
                     break;
+                default:
+                    setMessagesReceived((state) => [
+                        ...state,
+                        {
+                            message: message,
+                            username: username,
+                            __createdtime__: data.__createdtime__,
+                            type: 'text'
+                        },
+                    ]);
             }
         });
         // console.log('socket off receive_message ');
