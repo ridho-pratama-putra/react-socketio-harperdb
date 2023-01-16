@@ -1,6 +1,6 @@
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import Home from './pages/home';
 import io from 'socket.io-client';
 import Chat from "./pages/chat";
@@ -12,6 +12,14 @@ function App() {
     const [room, setRoom] = useState('');
     // console.log(`username -> ${username}`)
     // console.log(`room -> ${room}`)
+    const beforeunload = (e) => {
+        e.preventDefault();
+        e.returnValue = true;
+    }
+    useEffect(() => {
+        window.addEventListener('beforeunload', beforeunload.bind(this));
+    })
+
     return (
         <Router>
             <div className='App'>
