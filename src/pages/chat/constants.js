@@ -7,3 +7,8 @@ export const EVENT = {
     SEND_IMAGE_EVENT: "send_image",
     SEND_MESSAGE_EVENT: "send_message",
 }
+
+export const MESSAGE_TYPE = {
+    MEDIA_MESSAGE_TYPE: 'media',
+    TEXT_MESSAGE_TYPE: 'text',
+}

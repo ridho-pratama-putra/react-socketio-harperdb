@@ -2,8 +2,7 @@
 
 import styles from './styles.module.css';
 import {useState, useEffect, useRef} from 'react';
-import {EVENT} from "./constants";
-import axios from "axios";
+import {EVENT, MESSAGE_TYPE} from "./constants";
 
 const Messages = ({socket}) => {
     const [messagesRecieved, setMessagesReceived] = useState([]);
@@ -26,9 +25,6 @@ const Messages = ({socket}) => {
                             type: 'media'
                         },
                     ]);
-                    axios.get("http://localhost:4000/file?filename=" + message).then((response) => {
-                        console.log("http://localhost:4000/file?filename=" + message, response)
-                    });
                     break;
                 default:
                     setMessagesReceived((state) => [
@@ -84,18 +80,33 @@ const Messages = ({socket}) => {
 
     return (
         <div className={styles.messagesColumn} ref={messagesColumnRef}>
-            {messagesRecieved.map((msg, i) => (
-                <div className={styles.message} key={i}>
-                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <span className={styles.msgMeta}>{msg.username}</span>
-                        <span className={styles.msgMeta}>
+            {messagesRecieved.map((msg, i) => {
+                if (msg.type === MESSAGE_TYPE.MEDIA_MESSAGE_TYPE) {
+                    return (
+                        <div className={styles.message} key={i}>
+                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <span className={styles.msgMeta}>
+                                  {formatDateFromTimestamp(msg.__createdtime__)}
+                                </span>
+                            </div>
+                            <p className={styles.msgText}>{msg.message}</p>
+                            <br/>
+                        </div>
+                    );
+                }
+                return (
+                    <div className={styles.message} key={i}>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <span className={styles.msgMeta}>{msg.username}</span>
+                            <span className={styles.msgMeta}>
                           {formatDateFromTimestamp(msg.__createdtime__)}
                         </span>
+                        </div>
+                        <p className={styles.msgText}>{msg.message}</p>
+                        <br/>
                     </div>
-                    <p className={styles.msgText}>{msg.message}</p>
-                    <br/>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 };
